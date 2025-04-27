@@ -3,32 +3,121 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Rizki Januar</title>
+    <title>Rizki Januar - Portfolio</title>
     <style>
-        body, html {
+        body {
             margin: 0;
             padding: 0;
-            height: 100%;
-            overflow: hidden;
-            background-color: #ffffff;
-        }
-        .container {
-            display: flex;
-            flex-direction: column;
             height: 100vh;
+            display: flex;
             justify-content: center;
             align-items: center;
+            flex-direction: column;
+            background-color: black;
+            color: white;
+            font-family: 'Arial', sans-serif;
+            text-align: center;
         }
-        iframe {
+
+        h1 {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+        }
+
+        p {
+            font-size: 1.2rem;
+            color: #a0a0a0;
+            max-width: 600px;
+            line-height: 1.6;
+            margin-bottom: 2rem;
+        }
+
+        .btn {
+            background-color: #333;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 50px;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .btn:hover {
+            background-color: #444;
+            transform: translateY(-2px);
+        }
+
+        #content {
+            text-align: center;
+            padding: 2rem;
+        }
+
+        #loadingScreen {
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .spinner {
+            width: 50px;
+            height: 50px;
+            border: 5px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            border-top-color: white;
+            animation: spin 1s ease-in-out infinite;
+            margin-bottom: 20px;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        #iframe-container {
+            display: none;
             width: 100%;
             height: 100vh;
+        }
+
+        iframe {
+            width: 100%;
+            height: 100%;
             border: none;
         }
     </style>
 </head>
 <body>
-    <div class="container">
-        <iframe src="https://verbose-shade-71e.notion.site/ebd/1e064c9e59f48035ad98fe03a78b9eea" width="100%" height="100%" frameborder="0" allowfullscreen></iframe>
+    <div id="content">
+        <h1>I've moved!</h1>
+        <p>The website has been relocated to a new domain.<br>Please click the button below to access the updated site.</p>
+        <button id="redirectBtn" class="btn">Click Here</button>
     </div>
+
+    <div id="loadingScreen">
+        <div class="spinner"></div>
+        <p>Loading your portfolio...</p>
+    </div>
+
+    <div id="iframe-container">
+        <iframe src="https://verbose-shade-71e.notion.site/ebd/1e064c9e59f48035ad98fe03a78b9eea" frameborder="0" allowfullscreen></iframe>
+    </div>
+
+    <script>
+        document.getElementById('redirectBtn').addEventListener('click', function() {
+            // Hide the content div
+            document.getElementById('content').style.display = 'none';
+
+            // Show loading screen
+            document.getElementById('loadingScreen').style.display = 'flex';
+
+            // Wait 5 seconds then show the iframe
+            setTimeout(function() {
+                document.getElementById('loadingScreen').style.display = 'none';
+                document.getElementById('iframe-container').style.display = 'block';
+                document.body.style.overflow = 'hidden'; // Prevent scrolling on the main page
+            }, 5000);
+        });
+    </script>
 </body>
 </html>

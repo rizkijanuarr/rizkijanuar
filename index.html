@@ -3,20 +3,29 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Rizki Januar I.</title>
+    <title>Rizki Januar - Portfolio</title>
     <style>
-        body {
+        body, html {
             margin: 0;
             padding: 0;
-            height: 100vh;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            flex-direction: column;
+            height: 100%;
             background-color: black;
             color: white;
-            font-family: 'Arial', sans-serif;
-            text-align: center;
+            overflow: hidden;
+        }
+
+        #initialContent {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            background-color: black;
         }
 
         h1 {
@@ -27,38 +36,31 @@
         p {
             font-size: 1.2rem;
             color: #a0a0a0;
-            max-width: 600px;
-            line-height: 1.6;
             margin-top: 0;
-            margin-bottom: 2rem;
-        }
-
-        #initialContent {
-            text-align: center;
-            padding: 2rem;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
         }
 
         .spinner {
-            width: 20px;
-            height: 20px;
+            width: 50px;
+            height: 50px;
             border: 5px solid rgba(255, 255, 255, 0.3);
             border-radius: 50%;
             border-top-color: white;
             animation: spin 1s ease-in-out infinite;
-            margin-top: -20px;
+            margin-top: 20px;
         }
 
         @keyframes spin {
             to { transform: rotate(360deg); }
         }
 
-        #iframe-container {
-            display: none;
+        #notion-container {
+            position: fixed;
+            top: 0;
+            left: 0;
             width: 100%;
-            height: 100vh;
+            height: 100%;
+            z-index: 100;
+            display: none;
             background-color: black;
         }
 
@@ -66,7 +68,17 @@
             width: 100%;
             height: 100%;
             border: none;
-            background-color: black;
+        }
+
+        /* Inject dark mode styles */
+        #style-injector {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 0;
+            z-index: 500;
+            pointer-events: none;
         }
     </style>
 </head>
@@ -77,17 +89,57 @@
         <div class="spinner"></div>
     </div>
 
-    <div id="iframe-container">
-        <iframe src="https://verbose-shade-71e.notion.site/ebd/1e064c9e59f48035ad98fe03a78b9eea" frameborder="0" allowfullscreen></iframe>
+    <div id="notion-container">
+        <iframe id="notion-frame" src="https://verbose-shade-71e.notion.site/ebd/1e064c9e59f48035ad98fe03a78b9eea" frameborder="0" allowfullscreen></iframe>
     </div>
+
+    <div id="style-injector"></div>
 
     <script>
         window.onload = function() {
+            // Show loading screen for 5 seconds
             setTimeout(function() {
                 document.getElementById('initialContent').style.display = 'none';
+                document.getElementById('notion-container').style.display = 'block';
 
-                document.getElementById('iframe-container').style.display = 'block';
-                document.body.style.overflow = 'hidden';
+                // Try to inject dark mode after iframe loads
+                const frame = document.getElementById('notion-frame');
+                frame.onload = function() {
+                    try {
+                        // Attempt to inject a dark overlay
+                        const styleInjector = document.getElementById('style-injector');
+                        styleInjector.innerHTML = `
+                            <style>
+                                body::after {
+                                    content: "";
+                                    position: fixed;
+                                    top: 0;
+                                    left: a;
+                                    width: 100%;
+                                    height: 100%;
+                                    background: rgba(0,0,0,0.8);
+                                    pointer-events: none;
+                                    z-index: 1000;
+                                }
+                            </style>
+                        `;
+
+                        // Try to access iframe content (may fail due to same-origin policy)
+                        try {
+                            const iframeDocument = frame.contentDocument || frame.contentWindow.document;
+                            const style = document.createElement('style');
+                            style.textContent = `
+                                body, div, section { background-color: black !important; color: white !important; }
+                                .notion-light-theme { background-color: black !important; }
+                            `;
+                            iframeDocument.head.appendChild(style);
+                        } catch(e) {
+                            console.log("Couldn't modify iframe content due to same-origin policy");
+                        }
+                    } catch(e) {
+                        console.error("Error injecting styles:", e);
+                    }
+                };
             }, 5000);
         };
     </script>
